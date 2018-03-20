@@ -1,5 +1,11 @@
 package Discord;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.Vector;
 
 import Discord.API.BotListener;
@@ -37,16 +43,38 @@ public class Main {
 
 	@SuppressWarnings("unused")
 	private static void loadConfigFromFile(String path) {
-		Vector<String> lines = IO.readFile(path);
-		for(String line:lines) {
-			String parName = line.substring(0,line.indexOf(":"));
-			String parVal = line.substring(line.indexOf(":")+1,line.length()).replaceAll(" ", "");
+		
+		try {
+			File file = new File("bot.properties");
+			FileInputStream fileInput = new FileInputStream(file);
+			Properties properties = new Properties();
+			properties.load(fileInput);
+			fileInput.close();
 			
-			if(parName.equals(Constants.CFG_db_string)) DataManager.Instance().database_string = parVal;
-			else if(parName.equals(Constants.CFG_live_token) && !Constants.TEST) DataManager.Instance().bot_token = parVal;	
-			else if(parName.equals(Constants.CFG_live_id) && !Constants.TEST) DataManager.Instance().bot_id = Long.parseLong(parVal);
-			else if(parName.equals(Constants.CFG_test_token) && Constants.TEST) DataManager.Instance().bot_token = parVal;	
-			else if(parName.equals(Constants.CFG_test_id) && Constants.TEST) DataManager.Instance().bot_id = Long.parseLong(parVal);
+			if (properties.containsKey(Constants.CFG_db_string)) DataManager.Instance().database_string = properties.getProperty(Constants.CFG_db_string);
+			if(!Constants.TEST) {
+				if (properties.containsKey(Constants.CFG_live_token)) DataManager.Instance().bot_token = properties.getProperty(Constants.CFG_live_token);
+				if (properties.containsKey(Constants.CFG_live_id)) DataManager.Instance().bot_id = Long.parseLong(properties.getProperty(Constants.CFG_live_id));
+			} else {
+				if (properties.containsKey(Constants.CFG_test_token)) DataManager.Instance().bot_token = properties.getProperty(Constants.CFG_test_token);
+				if (properties.containsKey(Constants.CFG_test_id)) DataManager.Instance().bot_id = Long.parseLong(properties.getProperty(Constants.CFG_test_id));
+			}
+/*
+			Enumeration enuKeys = properties.keys();
+			while (enuKeys.hasMoreElements()) {
+				String key = (String) enuKeys.nextElement();
+				String value = properties.getProperty(key);
+				if(key.equals(Constants.CFG_db_string)) DataManager.Instance().database_string = value;
+				else if(key.equals(Constants.CFG_live_token) && !Constants.TEST) DataManager.Instance().bot_token = value;	
+				else if(key.equals(Constants.CFG_live_id) && !Constants.TEST) DataManager.Instance().bot_id = Long.parseLong(value);
+				else if(key.equals(Constants.CFG_test_token) && Constants.TEST) DataManager.Instance().bot_token = value;	
+				else if(key.equals(Constants.CFG_test_id) && Constants.TEST) DataManager.Instance().bot_id = Long.parseLong(value);
+			}
+			*/
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
