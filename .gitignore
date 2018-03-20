@@ -53,3 +53,7 @@ local.properties
 .worksheet
 bot.properties
 log.txt
+
+# Gradle
+.gradle
+build/
