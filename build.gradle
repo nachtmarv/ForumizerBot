@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+mainClassName = 'Discord.Main'
+
+repositories {
+  jcenter() //This prevents issues with transitive dependencies
+  maven {
+    url  "https://jitpack.io"
+  }
+}
+dependencies {
+  compile "com.github.austinv11:Discord4J:2.10.0"
+  compile "mysql:mysql-connector-java:5.1.37"
+}
+jar {
+    baseName = 'sentinel'
+    version =  '0.1.0'
+}
