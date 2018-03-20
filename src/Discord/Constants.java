@@ -5,7 +5,7 @@ public class Constants {
 	// Testflag. Decides if the live or test bot is used.
 	public static final boolean TEST = true;
 	
-	public static final String CONFIG_PATH = "config.txt";
+	public static final String CONFIG_PATH = "bot.properties";
 	
 	public static final String CFG_db_string = "db_string";
 	public static final String CFG_live_token = "live_token";

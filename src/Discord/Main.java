@@ -45,7 +45,7 @@ public class Main {
 	private static void loadConfigFromFile(String path) {
 		
 		try {
-			File file = new File("bot.properties");
+			File file = new File(path);
 			FileInputStream fileInput = new FileInputStream(file);
 			Properties properties = new Properties();
 			properties.load(fileInput);
@@ -59,18 +59,6 @@ public class Main {
 				if (properties.containsKey(Constants.CFG_test_token)) DataManager.Instance().bot_token = properties.getProperty(Constants.CFG_test_token);
 				if (properties.containsKey(Constants.CFG_test_id)) DataManager.Instance().bot_id = Long.parseLong(properties.getProperty(Constants.CFG_test_id));
 			}
-/*
-			Enumeration enuKeys = properties.keys();
-			while (enuKeys.hasMoreElements()) {
-				String key = (String) enuKeys.nextElement();
-				String value = properties.getProperty(key);
-				if(key.equals(Constants.CFG_db_string)) DataManager.Instance().database_string = value;
-				else if(key.equals(Constants.CFG_live_token) && !Constants.TEST) DataManager.Instance().bot_token = value;	
-				else if(key.equals(Constants.CFG_live_id) && !Constants.TEST) DataManager.Instance().bot_id = Long.parseLong(value);
-				else if(key.equals(Constants.CFG_test_token) && Constants.TEST) DataManager.Instance().bot_token = value;	
-				else if(key.equals(Constants.CFG_test_id) && Constants.TEST) DataManager.Instance().bot_id = Long.parseLong(value);
-			}
-			*/
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
