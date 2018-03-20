@@ -3,8 +3,9 @@ Code for the Sentinel bot we use on our discord server
 
 ### Config File
 Run
-    cp config.txt.template config.txt
-
+```
+cp config.txt.template config.txt
+```
 Edit the config.txt with your correct database string, id's and tokens.
 
 ### External Libraries
