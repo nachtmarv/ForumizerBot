@@ -1,6 +1,25 @@
 # SentinelBot
 Code for the Sentinel bot we use on our discord server
 
+### Database
+I am using a mysql database for several features.
+Some of them need unicode emoji support so make sure you configured your database correctly.
+Here are the necessary tables:
+```
+EmojiBinds
+  pK: int, autogenerate
+  channelId: bigInt
+  isUnicode: bit
+  unicodeString: varchar utf8mb4
+  emojiId: bigInt
+  roleId: bigInt
+```
+
+```
+RoleReactionAssignmentChannel
+  channelId: bigInt 
+```
+
 ### Config File
 This code needs a config file in the following format:
 ```
