@@ -51,14 +51,14 @@ public class Main {
 			properties.load(fileInput);
 			fileInput.close();
 			
-			if (properties.containsKey(Constants.CFG_db_string)) DataManager.Instance().database_string = properties.getProperty(Constants.CFG_db_string);
-			if(!Constants.TEST) {
-				if (properties.containsKey(Constants.CFG_live_token)) DataManager.Instance().bot_token = properties.getProperty(Constants.CFG_live_token);
-				if (properties.containsKey(Constants.CFG_live_id)) DataManager.Instance().bot_id = Long.parseLong(properties.getProperty(Constants.CFG_live_id));
-			} else {
-				if (properties.containsKey(Constants.CFG_test_token)) DataManager.Instance().bot_token = properties.getProperty(Constants.CFG_test_token);
-				if (properties.containsKey(Constants.CFG_test_id)) DataManager.Instance().bot_id = Long.parseLong(properties.getProperty(Constants.CFG_test_id));
-			}
+			if (properties.containsKey(Constants.CFG_db_string)) 
+				DataManager.Instance().database_string = properties.getProperty(Constants.CFG_db_string);
+			if (properties.containsKey(Constants.CFG_token)) 
+				DataManager.Instance().bot_token = properties.getProperty(Constants.CFG_token);
+			if (properties.containsKey(Constants.CFG_id)) 
+				DataManager.Instance().bot_id = Long.parseLong(properties.getProperty(Constants.CFG_id));
+			if (properties.containsKey(Constants.CFG_prefix)) 
+				DataManager.Instance().bot_prefix = properties.getProperty(Constants.CFG_prefix);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

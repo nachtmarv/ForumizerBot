@@ -2,21 +2,13 @@ package Discord;
 
 public class Constants {
 	
-	// Testflag. Decides if the live or test bot is used.
-	public static final boolean TEST = true;
-	
 	public static final String CONFIG_PATH = "bot.properties";
 	
 	public static final String CFG_db_string = "db_string";
-	public static final String CFG_live_token = "live_token";
-	public static final String CFG_live_id = "live_id";
-	public static final String CFG_test_token = "test_token";
-	public static final String CFG_test_id = "test_id";
+	public static final String CFG_token = "bot_token";
+	public static final String CFG_id = "bot_id";
+	public static final String CFG_prefix = "bot_prefix";
 	
-	public static final String CMD_PREFIX = new String ("%");
-	public static final String RMM_PREFIX_1 = new String (CMD_PREFIX+"!");
-	public static final String RMM_PREFIX_2 = new String (CMD_PREFIX+"\"");
-	public static final String RMM_PREFIX_3 = new String (CMD_PREFIX+"'");
 	public static final int CONN_TRIES = 10;
 	public static final int CONN_TRY_SLEEP = 2000; 
 	public static final int CONN_CHECK_TIMEOUT = 5000; 

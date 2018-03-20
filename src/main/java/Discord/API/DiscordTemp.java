@@ -1,4 +1,5 @@
 package Discord.API;
+import Discord.DataManager;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.ActivityType;
@@ -9,7 +10,7 @@ public class DiscordTemp {
 	
 	public static IDiscordClient createClient(String token, boolean login) { // Returns a new instance of the Discord client
         ClientBuilder clientBuilder = new ClientBuilder(); // Creates the ClientBuilder instance
-        clientBuilder.setPresence(StatusType.ONLINE, ActivityType.LISTENING, "%help");
+        clientBuilder.setPresence(StatusType.ONLINE, ActivityType.LISTENING, DataManager.Instance().bot_prefix+"help");
         clientBuilder.withToken(token); // Adds the login info to the builder
         try {
             if (login) {

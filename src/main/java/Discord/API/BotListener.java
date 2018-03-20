@@ -1,6 +1,7 @@
 package Discord.API;
 
 import Discord.Constants;
+import Discord.DataManager;
 import Discord.IO;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -13,8 +14,8 @@ public class BotListener {
 	
 	@EventSubscriber
 	public void onMessageEvent(MessageReceivedEvent event) {
-		if(event.getMessage().getContent().toLowerCase().startsWith(Constants.CMD_PREFIX)) {
-			CommandProcessor.processCommand(event.getMessage(), Constants.CMD_PREFIX);
+		if(event.getMessage().getContent().toLowerCase().startsWith(DataManager.Instance().bot_prefix)) {
+			CommandProcessor.processCommand(event.getMessage(), DataManager.Instance().bot_prefix);
 		}
 	}
 	

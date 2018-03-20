@@ -11,6 +11,7 @@ public class DataManager {
 	Map<Long,Vector<BoundEmoji>> boundEmojis = null;
 	public long sentinelId = 0;
 	
+	public String bot_prefix = "%";
 	public String database_string;
 	public String bot_token = "";
 	public long bot_id = 0L;

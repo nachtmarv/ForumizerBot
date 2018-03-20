@@ -37,7 +37,7 @@ public class CommandProcessor {
 	}
 	
 private static void handlePoll(IMessage message, String[] command) {
-		String content = message.getContent().replaceFirst(Constants.CMD_PREFIX+command[0]+" ", "");
+		String content = message.getContent().replaceFirst(DataManager.Instance().bot_prefix+command[0]+" ", "");
 		
 		EmbedBuilder builder = new EmbedBuilder();
 		builder.withAuthorName(message.getAuthor().getDisplayName(message.getGuild()) + Constants.POLL_ADDITION);
@@ -99,7 +99,7 @@ private static void handlePoll(IMessage message, String[] command) {
 		
 		channel.sendMessage("please use rmc with parameters "
 				+ "'add' 'remove' 'bind' 'unbind' 'check'"
-				+ "\ntype "+Constants.CMD_PREFIX+"help for additional info.");
+				+ "\ntype "+DataManager.Instance().bot_prefix+"help for additional info.");
 	}
 	
 	private static void doBindUnbind(IMessage message, String[] command) {
