@@ -18,11 +18,19 @@ public class DataManager {
 	private static DataManager instance = null;
 	
 	
+	/**
+	 * Returns the DataManager instance.
+	 * @return DataManager instance
+	 */
 	public static DataManager Instance() {
 		if(instance == null) instance = new DataManager();
 		return instance;
 	}
 	
+	/**
+	 * Fetches all data from the database.
+	 * @return true if successful
+	 */
 	public boolean getDataFromDatabase() {
 		try {
 			channelSet = dbconnector.getChannelIDs();
@@ -30,16 +38,27 @@ public class DataManager {
 		} catch (SQLException e) {
 			IO.printToConsole("CRITICAL ERROR: Could not get data from database. terminating...");
 			e.printStackTrace();
-			System.exit(2);
+			return false;
 		}
 		return true;
 	}
 	
+	/**
+	 * Checks if a channel is an rmc channel
+	 * @param channelId
+	 * @return true if it is an rmc channel, false if it isn't
+	 */
 	public boolean isValidChannel(Long id) {
 		if(channelSet.contains(id)) return true;
 		return false;
 	}
 	
+	/**
+	 * Adds a channel to the rmc channel list.
+	 * First tries to insert into the database, then manipulates the local list.
+	 * @param id
+	 * @return
+	 */
 	public boolean addChannel(Long id) {
 		boolean result = dbconnector.addChannelId(id);
 		if(result) {
@@ -49,17 +68,32 @@ public class DataManager {
 		return false;
 	}
 	
-	public boolean removeChannel(Long id) {
-		boolean result = dbconnector.deleteChannelId(id);
+	/**
+	 * Removes a channel from list of rmc channels and deletes all their emoji-role bindings.
+	 * First tries to delete from the database, then manipulates the local list.
+	 * @param channelId
+	 * @return true if successful
+	 */
+	public boolean removeChannel(Long channelId) {
+		boolean result = dbconnector.deleteChannelId(channelId);
 		if(result) {
-			dbconnector.removeAllEmojisOfChannel(id);
-			channelSet.remove(id);
-			boundEmojis.remove(id);
+			dbconnector.removeAllEmojisOfChannel(channelId);
+			channelSet.remove(channelId);
+			boundEmojis.remove(channelId);
 			return true;
 		}
 		return false;
 	}
 	
+	
+	/**
+	 * Checks if an emoji has a role bound to it in a given channel
+	 * @param channelId
+	 * @param isUnicode true if the character is a unicode emoji, false if custom
+	 * @param unicodeString The string of the unicode emoji. Ignored if isUnicode is false.
+	 * @param emojiId The ID of the custom emoji. Ignored if isUnicode is true.
+	 * @return ID of the bound role or 0 if no role was found
+	 */
 	public long checkBoundEmoji(long channelId, boolean isUnicode, String unicodeString, long emojiId) {
 		if(!boundEmojis.containsKey(channelId)) return 0;
 		Vector<BoundEmoji> emojiVec = boundEmojis.get(channelId);

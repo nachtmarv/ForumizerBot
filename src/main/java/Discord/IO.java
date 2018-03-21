@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Vector;
 
+/**
+ * Handles all file and console interactions.
+ * 
+ * @author Marvin Weisbrod
+ */
 public class IO {
 	private static Scanner sc = null;
 	

@@ -10,20 +10,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+/**
+ * Handles all database interactions
+ * 
+ * @author Marvin Weisbrod
+ */
 public class DB_Connector {
 	private Connection conn = null;
 	
 	public DB_Connector() {
-		boolean result = setup();
-		if(result == false)
+		if(!setup())
 			System.exit(1);
 	}
 	
+	/**
+	 * Setup required to use the JDBC driver
+	 * @return true if successful, false if an exception occured
+	 */
 	public boolean setup() {
 		try {
             // The newInstance() call is a work around for some
             // broken Java implementations
-			
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             return true;
         } catch (Exception ex) {
@@ -31,6 +38,12 @@ public class DB_Connector {
         }
 	}
 	
+	/**
+	 * Establishes a connection to the database. 
+	 * Tries multiple times if the connection could not be established the first time.
+	 * waits between tries a predetermined amount (set in Constants)
+	 * @return true if the connection has been established, false if not
+	 */
 	public boolean connect() {
 		int tries = 0;
 		while(tries < Constants.CONN_TRIES) {
@@ -59,6 +72,11 @@ public class DB_Connector {
 		}
 	}
 	
+	/**
+	 * Fetches all rmc channel IDs from the database and returns them in a set
+	 * @return Set of rmc channel IDs
+	 * @throws SQLException
+	 */
 	public Set<Long> getChannelIDs() throws SQLException{
 		maintainConnection();
 		
@@ -84,19 +102,22 @@ public class DB_Connector {
 		        try {
 		            rs.close();
 		        } catch (SQLException sqlEx) { } // ignore
-		        rs = null;
 		    }
 
 		    if (stmt != null) {
 		        try {
 		            stmt.close();
 		        } catch (SQLException sqlEx) { } // ignore
-		        stmt = null;
 		    }
 		}
 		return null;
 	}
 	
+	/**
+	 * Inserts an rmc channel ID into the database
+	 * @param channel ID
+	 * @return true if successful
+	 */
 	public boolean addChannelId(long id) {
 		try {
 			maintainConnection();
@@ -124,12 +145,15 @@ public class DB_Connector {
 		        try {
 		            stmt.close();
 		        } catch (SQLException sqlEx) { } // ignore
-
-		        stmt = null;
 		    }
 		}
 	}
 	
+	/**
+	 * Deletes an rmc channel ID from the database
+	 * @param channel ID
+	 * @return true if successful
+	 */
 	public boolean deleteChannelId(long id) {
 		try {
 			maintainConnection();
@@ -157,12 +181,20 @@ public class DB_Connector {
 		        try {
 		            stmt.close();
 		        } catch (SQLException sqlEx) { } // ignore
-
-		        stmt = null;
 		    }
 		}
 	}
 	
+	/**
+	 * Inserts an emoji-role binding into the database.
+	 * Supports unicode emojis and custom discord emojis.
+	 * @param channelId
+	 * @param isUnicode true if the character is a unicode emoji, false if custom
+	 * @param unicodeString The string of the unicode emoji. Ignored if isUnicode is false.
+	 * @param emojiId The ID of the custom emoji. Ignored if isUnicode is true.
+	 * @param roleId
+	 * @return true if successful
+	 */
 	public boolean addEmoji(long channelId, boolean isUnicode, String unicodeString, long emojiId, long roleId) {
 		try {
 			maintainConnection();
@@ -199,12 +231,19 @@ public class DB_Connector {
 		        try {
 		            stmt.close();
 		        } catch (SQLException sqlEx) { } // ignore
-
-		        stmt = null;
 		    }
 		}
 	}
 	
+	/**
+	 * Removes an emoji-role binding from the database.
+	 * Supports unicode and custom emojis.
+	 * @param channelId
+	 * @param isUnicode true if the character is a unicode emoji, false if custom
+	 * @param unicodeString The string of the unicode emoji. Ignored if isUnicode is false.
+	 * @param emojiId The ID of the custom emoji. Ignored if isUnicode is true.
+	 * @return true if successful
+	 */
 	public boolean removeEmoji(long channelId, boolean isUnicode, String unicodeString, long emojiId) {
 		try {
 			maintainConnection();
@@ -243,12 +282,15 @@ public class DB_Connector {
 		        try {
 		            stmt.close();
 		        } catch (SQLException sqlEx) { } // ignore
-
-		        stmt = null;
 		    }
 		}
 	}
 	
+	/**
+	 * Removes all emoji-role bindings of a given channel from the database.
+	 * @param channelId
+	 * @return true if successful
+	 */
 	public boolean removeAllEmojisOfChannel(long channelId) {
 		try {
 			maintainConnection();
@@ -279,12 +321,15 @@ public class DB_Connector {
 		        try {
 		            stmt.close();
 		        } catch (SQLException sqlEx) { } // ignore
-
-		        stmt = null;
 		    }
 		}
 	}
 	
+	/**
+	 * Fetches all emoji-role bindings in the database.
+	 * @return emoji-role bindings in a Map
+	 * @throws SQLException Error executing the sql command
+	 */
 	public Map<Long,Vector<BoundEmoji>> getBoundEmojis() throws SQLException {
 		maintainConnection();
 		
@@ -337,6 +382,10 @@ public class DB_Connector {
 		return null;
 	}
 	
+	/**
+	 * Checks if the connection is still valid.
+	 * @return true if connection is still valid
+	 */
 	private boolean checkConnection() {
 		boolean connIsValid = false;
 		try {
@@ -349,6 +398,11 @@ public class DB_Connector {
 		return false;
 	}
 	
+	/**
+	 * Checks if the connection is still valid and tries to reconnect if it isn't.
+	 * @return true if connection is operational
+	 * @throws SQLException Connection could not be reestablished
+	 */
 	private boolean maintainConnection() throws SQLException{
 		if(!checkConnection()) {
 			boolean renewed = connect();

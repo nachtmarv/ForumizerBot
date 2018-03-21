@@ -4,16 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Properties;
-import java.util.Vector;
 
 import Discord.API.BotListener;
 import Discord.API.DiscordTemp;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
-import sx.blah.discord.handle.obj.ActivityType;
-import sx.blah.discord.handle.obj.StatusType;
 
 public class Main {
 
@@ -25,8 +21,12 @@ public class Main {
 			dm.dbconnector = new DB_Connector();
 			dm.dbconnector.connect();
 			
-			DataManager.Instance().getDataFromDatabase();
-		    
+			boolean result = DataManager.Instance().getDataFromDatabase();
+		    if(!result) {
+		    	IO.printToConsole("Data could not be fetched from database. \nTerminating program.");
+		    	System.exit(2);
+		    }
+		    	
 			IDiscordClient client = DiscordTemp.createClient(DataManager.Instance().bot_token, false);
 			EventDispatcher dispatcher = client.getDispatcher();
 			dispatcher.registerListener(new BotListener());
@@ -41,6 +41,10 @@ public class Main {
 		}
 	}
 
+	/**
+	 * Loads all variables from the config file and inserts them into the DataManager instance
+	 * @param config path
+	 */
 	@SuppressWarnings("unused")
 	private static void loadConfigFromFile(String path) {
 		
