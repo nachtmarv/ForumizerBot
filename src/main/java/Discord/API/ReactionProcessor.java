@@ -93,9 +93,12 @@ public class ReactionProcessor {
 		
 		builder.withColor(50, 50, 250);
 	    builder.withDescription(embed.getDescription());
-	    builder.appendField(Constants.REACTION_CHECK, 
+	    int total = usersYes.size() + usersNo.size();
+	    String numberCheck = " (" + usersYes.size() + "/" + total + ")";
+	    String numberX = " (" + usersNo.size() + "/" + total + ")";
+	    builder.appendField(Constants.REACTION_CHECK + numberCheck, 
 	    		peopleYes, true);
-	    builder.appendField(Constants.REACTION_X, 
+	    builder.appendField(Constants.REACTION_X + numberX, 
 	    		peopleNo, true);
 	    //builder.withFooterText(embed.getFooter().getText());
 	    
