@@ -18,9 +18,10 @@ import sx.blah.discord.util.RequestBuffer;
 
 public class ReactionProcessor {
 	public static void processReaction(IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
+		// Filter reactions from bots
 		if(user.isBot()) return;
 		
-		// Filter this bot to begin poll management
+		// Filter messages from this bot for poll reactions
 		if(message.getAuthor().getLongID() == DataManager.Instance().bot_id) {
 			List<IEmbed> embeds = message.getEmbeds();
 			if(embeds.isEmpty()) return;
@@ -36,16 +37,17 @@ public class ReactionProcessor {
 	}
 	
 	public static void processPollReaction(IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added, IEmbed embed) {
+		// Filter for poll evaluation emoji
+		if(!reaction.getEmoji().equals(Constants.REACTION_POLLEVAL_EMOJI)) return;
+		
+		if(added) {
+			ServerInteractions.removeReactionFromMessage(message, user, Constants.REACTION_POLLEVAL_EMOJI);
+			return;
+		}
+		
 		// get all voters for both reactions (custom reactions, Id stored in Constants)
-	    IReaction reactionCheck = message.getReactionByID(Constants.REACTION_CHECK_ID);
-	    IReaction reactionX = message.getReactionByID(Constants.REACTION_X_ID);
-	    
-	    // Testing if all reactions are there
-	    List<IReaction> allReactions =  message.getReactions();
-	    IO.printToConsole("Existing reactions on message:");
-	    for(IReaction r:allReactions) {
-	    	IO.printToConsole(r.getEmoji().getName());
-	    }
+	    IReaction reactionCheck = message.getReactionByUnicode(Constants.REACTION_CHECK);
+	    IReaction reactionX = message.getReactionByUnicode(Constants.REACTION_X);
 	    
 	    //Check whether there are no voters. returns sometimes null
 	    if(reactionCheck == null || reactionX == null) {
@@ -63,33 +65,14 @@ public class ReactionProcessor {
 	    
 	    //put the users in a map if they are not bots. 
 	    //could be done another way but it remained after some experiments.
-	    for(IUser u:reactionCheck.getUsers()) {
-	    	if(!u.isBot())
-	    		usersYes.put(u.getLongID(), u);
-		}
 	    for(IUser u:reactionX.getUsers()) {
 	    	if(!u.isBot())
 	    		usersNo.put(u.getLongID(), u);
 		}
-	    
-	    //Remove the other reaction if it is there
-	    if(reaction.getEmoji().getLongID() == Constants.REACTION_CHECK_ID && added) {
-	    	if(usersNo.containsKey(user.getLongID())) {
-	    		try {
-	    			ServerInteractions.removeReactionFromMessage(message, user, ReactionEmoji.of(Constants.REACTION_X_NAME, Constants.REACTION_X_ID));
-	    		} catch(Exception e) {}
-	    		usersNo.remove(user.getLongID());
-	    	}
-	    }
-	    else if(reaction.getEmoji().getLongID() == Constants.REACTION_X_ID && added){
-	    	if(usersYes.containsKey(user.getLongID())) {
-	    		try {
-	    			ServerInteractions.removeReactionFromMessage(message, user, ReactionEmoji.of(Constants.REACTION_CHECK_NAME, Constants.REACTION_CHECK_ID));
-	    		} catch(Exception e) {}
-		    	usersYes.remove(user.getLongID());
-	    	}
-	    }
-	    
+	    for(IUser u:reactionCheck.getUsers()) {
+	    	if(!u.isBot() && !usersNo.containsKey(u.getLongID()))
+	    		usersYes.put(u.getLongID(), u);
+		}
 	    
 	    
 	    // Build strings for voters
@@ -97,9 +80,9 @@ public class ReactionProcessor {
 	    String peopleNo = "";
 	    
 	    for(Map.Entry<Long, IUser> u:usersYes.entrySet())
-	    	peopleYes = peopleYes + u.getValue().mention() + "\n";
+	    	peopleYes = peopleYes + u.getValue().getDisplayName(message.getGuild()) + "\n";
 	    for(Map.Entry<Long, IUser> u:usersNo.entrySet())
-	    	peopleNo = peopleNo + u.getValue().mention() + "\n";
+	    	peopleNo = peopleNo + u.getValue().getDisplayName(message.getGuild()) + "\n";
 	    
 	    if(usersYes.isEmpty()) peopleYes = "-----";
 	    if(usersNo.isEmpty()) peopleNo = "-----";
@@ -108,12 +91,13 @@ public class ReactionProcessor {
 	    EmbedBuilder builder = new EmbedBuilder();
 		builder.withAuthorName(embed.getAuthor().getName());
 		
-		builder.withColor(20, 20, 200);
+		builder.withColor(50, 50, 250);
 	    builder.withDescription(embed.getDescription());
 	    builder.appendField(Constants.REACTION_CHECK, 
 	    		peopleYes, true);
 	    builder.appendField(Constants.REACTION_X, 
 	    		peopleNo, true);
+	    //builder.withFooterText(embed.getFooter().getText());
 	    
 	    ServerInteractions.editEmbedInMessage(message, builder.build());
 	}

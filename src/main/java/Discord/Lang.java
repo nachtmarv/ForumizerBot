@@ -47,7 +47,6 @@ public class Lang {
 		
 		builder.withColor(20, 200, 20);
 		builder.withTitle("[everyone]");
-	    //builder.withDesc("withDesc");
 	    builder.withDescription("The bot will reply \"pong\"");
 	    
 	    return builder.build();
@@ -59,9 +58,10 @@ public class Lang {
 		
 		builder.withColor(20, 200, 20);
 		builder.withTitle("[everyone]");
-	    //builder.withDesc("withDesc");
 	    builder.withDescription("The bot creates a poll with your message and adds reactions for 'yes' and 'no'."
-	    		+ "\nAfter a user clicks on a reaction, they will be included in the poll message so everyone can easily see who voted what.");
+	    		+ "\nUsers can add their answer like a normal poll. If someone then reacts with the third preadded emoji"
+	    		+ ", The bot will edit the names of everyone who voted into the message for easier viewing."
+	    		+ "\nIf somebody voted with yes and no, the bot will treat it as a no.");
 	    
 	    return builder.build();
 	}

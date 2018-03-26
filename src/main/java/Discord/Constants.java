@@ -1,5 +1,7 @@
 package Discord;
 
+import sx.blah.discord.handle.impl.obj.ReactionEmoji;
+
 public class Constants {
 	
 	// Path for the config file
@@ -26,22 +28,24 @@ public class Constants {
 	public static final int MAX_EMOJIS_PER_CHANNEL = 30;
 	
 	// String every poll message has as an identifier in the author name.
-	public static final String POLL_ADDITION = "'s poll";
+	public static final String POLL_ADDITION = " asks:";
 		
 	// Unicode emoji used to delete all reactions on role management messages.
 	public static final String DELETE_EMOJI = "\u2702";
-	// Name of the X reaction used on messages
-	public static final String REACTION_X_NAME = "sentinel_x";
-	// Id of the X reaction used on messages
-	public static final long REACTION_X_ID = 423974983862190080L;
-	// Name of the checkmark reaction used on messages
-	public static final String REACTION_CHECK_NAME = "sentinel_check";
-	// Id of the checkmark reaction used on messages
-	public static final long REACTION_CHECK_ID = 423974674607767572L;
-	// Complete, pasteable string of the X reaction used by the bot
-	public static final String REACTION_X = "<:sentinel_x:423974983862190080>";
-	// Complete, pasteable string of the checkmark reaction used by the bot
-	public static final String REACTION_CHECK = "<:sentinel_check:423974674607767572>";
+	// Unicode emoji used to initiate poll evaluation on poll messages.
+	public static final String POLLEVAL_EMOJI = "\u23F0";
+	// Unicode checkmark emoji used
+	public static final String REACTION_CHECK = "\u2705";
+	// Unicode 'no' and 'X' emoji used
+	public static final String REACTION_X = "\u274C";
+	// Integer representation of the evaluation emoji. needs more than 16 bit, so we have to convert it at execution to string
+	public static final int REACTION_POLLEVAL_INT = 0x1f501;
+	// Emoji object of the evaluation emoji. is created at the start of the program.
+	public static ReactionEmoji REACTION_POLLEVAL_EMOJI = create_POLLEVAL_EMOJI();
 	
 	
+	private static ReactionEmoji create_POLLEVAL_EMOJI() {
+		String s = new StringBuilder().appendCodePoint(Constants.REACTION_POLLEVAL_INT).toString();
+		return ReactionEmoji.of(s);
+	}
 }

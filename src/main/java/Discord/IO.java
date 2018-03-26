@@ -77,4 +77,13 @@ public class IO {
 		}
 		return lines;
 	}
+
+	public static void printToConsole(char[] charArray) {
+		String s = "";
+		for(char c:charArray) {
+			int i = c;
+			s+= i + "\n";
+		}
+		printToConsole(s);
+	}
 }

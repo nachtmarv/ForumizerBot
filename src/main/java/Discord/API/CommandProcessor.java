@@ -36,24 +36,20 @@ public class CommandProcessor {
 		}
 	}
 	
-private static void handlePoll(IMessage message, String[] command) {
+	private static void handlePoll(IMessage message, String[] command) {
 		String content = message.getContent().replaceFirst(DataManager.Instance().bot_prefix+command[0]+" ", "");
 		
 		EmbedBuilder builder = new EmbedBuilder();
 		builder.withAuthorName(message.getAuthor().getDisplayName(message.getGuild()) + Constants.POLL_ADDITION);
 		
-		builder.withColor(20, 20, 200);
-	    //builder.withDesc("withDesc");
-	    builder.withDescription(content);
-	    
-	    builder.appendField(Constants.REACTION_CHECK, 
-	    		"-----", true);
-	    builder.appendField(Constants.REACTION_X, 
-	    		"-----", true);
+		builder.withColor(50, 50, 250);
+	    builder.withDescription(content + "\n");
 		
 		IMessage answer = ServerInteractions.sendEmbedInChannel(message.getChannel(), builder.build());
-		boolean result = ServerInteractions.addReactionToMessage(answer, ReactionEmoji.of(Constants.REACTION_CHECK_NAME, Constants.REACTION_CHECK_ID));
-		if(result) ServerInteractions.addReactionToMessage(answer, ReactionEmoji.of(Constants.REACTION_X_NAME, Constants.REACTION_X_ID));
+		
+		boolean result = ServerInteractions.addReactionToMessage(answer, ReactionEmoji.of(Constants.REACTION_CHECK));
+		if(result) ServerInteractions.addReactionToMessage(answer, ReactionEmoji.of(Constants.REACTION_X));
+		ServerInteractions.addReactionToMessage(answer, Constants.REACTION_POLLEVAL_EMOJI);
 		
 		ServerInteractions.deleteMessage(message);
 	}
@@ -168,7 +164,7 @@ private static void handlePoll(IMessage message, String[] command) {
 				result = DataManager.Instance().removeBoundEmoji(channelId, isUnicode, unicodeString, emojiId);
 			}
 			if(result == 0) {
-				ServerInteractions.addReactionToMessage(message, ReactionEmoji.of(Constants.REACTION_CHECK_NAME, Constants.REACTION_CHECK_ID));
+				ServerInteractions.addReactionToMessage(message, ReactionEmoji.of(Constants.REACTION_CHECK));
 				return;
 			}
 			if(result == 2) {
@@ -176,7 +172,7 @@ private static void handlePoll(IMessage message, String[] command) {
 				return;
 			}
 		}
-		ServerInteractions.addReactionToMessage(message, ReactionEmoji.of(Constants.REACTION_X_NAME, Constants.REACTION_X_ID));
+		ServerInteractions.addReactionToMessage(message, ReactionEmoji.of(Constants.REACTION_X));
 			
 	}
 	
