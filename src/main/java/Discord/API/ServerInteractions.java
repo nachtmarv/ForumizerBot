@@ -19,6 +19,23 @@ public class ServerInteractions {
 		});
 	}
 	
+	public static void sendMessageToUser(IUser user, String message) {
+		RequestBuffer.request(() -> {
+			user.getOrCreatePMChannel().sendMessage(message);
+		});
+	}
+	
+	public static void sendEmbedToUser(IUser user, EmbedObject embed) {
+		RequestBuffer.request(() -> {
+			user.getOrCreatePMChannel().sendMessage(embed);
+		});
+	}
+	
+	public static void sendEmbedsToUser(IUser user, Vector<EmbedObject> embeds) {
+		for(EmbedObject embed:embeds)
+			sendEmbedToUser(user, embed);
+	}
+	
 	public static IMessage sendEmbedInChannel(IChannel channel, EmbedObject embed) {
 		IMessage result = RequestBuffer.request(() -> {
 			IMessage res = channel.sendMessage(embed);
@@ -34,7 +51,6 @@ public class ServerInteractions {
 	}
 	
 	public static void sendEmbedsInChannel(IChannel channel, Vector<EmbedObject> embeds) {
-		//IWebhook test = new Webhook(null, null, 0, channel, null, null, null);
 		for(EmbedObject embed:embeds)
 			sendEmbedInChannel(channel, embed);
 	}

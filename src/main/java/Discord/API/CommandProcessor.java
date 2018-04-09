@@ -1,21 +1,19 @@
 package Discord.API;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import Discord.Constants;
 import Discord.DataManager;
 import Discord.IO;
 import Discord.Lang;
+import Wrappers.EmbedWrapper;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.obj.ReactionEmoji;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IReaction;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.RequestBuffer;
 
 public class CommandProcessor {
@@ -30,22 +28,23 @@ public class CommandProcessor {
 		} else if(command[0].equals("rmc")) {
 			handleRMC(message, command);
 		} else if(command[0].equals("help")) {
-			ServerInteractions.sendEmbedsInChannel(message.getChannel(),Lang.help_embeds);
+			handleHelp(message);
 		} else if(command[0].equals("poll")) {
 			handlePoll(message, command);
 		}
 	}
 	
+	private static void handleHelp(IMessage message) {
+		ServerInteractions.sendEmbedsToUser(message.getAuthor(), Lang.help_embeds);
+		ServerInteractions.addReactionToMessage(message, ReactionEmoji.of(Constants.REACTION_CHECK));
+	}
+	
 	private static void handlePoll(IMessage message, String[] command) {
 		String content = message.getContent().replaceFirst(DataManager.Instance().bot_prefix+command[0]+" ", "");
 		
-		EmbedBuilder builder = new EmbedBuilder();
-		builder.withAuthorName(message.getAuthor().getDisplayName(message.getGuild()) + Constants.POLL_ADDITION);
+		EmbedObject embed = EmbedWrapper.CreateFirstPollMessage(message.getAuthor(), message.getGuild(), content, EmbedWrapper.POLLTYPE_default);
 		
-		builder.withColor(50, 50, 250);
-	    builder.withDescription(content + "\n");
-		
-		IMessage answer = ServerInteractions.sendEmbedInChannel(message.getChannel(), builder.build());
+		IMessage answer = ServerInteractions.sendEmbedInChannel(message.getChannel(), embed);
 		
 		boolean result = ServerInteractions.addReactionToMessage(answer, ReactionEmoji.of(Constants.REACTION_CHECK));
 		if(result) ServerInteractions.addReactionToMessage(answer, ReactionEmoji.of(Constants.REACTION_X));

@@ -12,7 +12,7 @@ public class Lang {
 	public static EmbedObject make_embed_rmc() {
 		EmbedBuilder builder = new EmbedBuilder();
 		builder.withAuthorName("rmc <action>");
-		
+		builder.withAuthorUrl(URI_Handler.createFakeUri_Help());
 		builder.withColor(230, 20, 20);
 		builder.withTitle("[administrator]");
 	    //builder.withDesc("withDesc");
@@ -44,7 +44,7 @@ public class Lang {
 	public static EmbedObject make_embed_ping() {
 		EmbedBuilder builder = new EmbedBuilder();
 		builder.withAuthorName("ping");
-		
+		builder.withAuthorUrl(URI_Handler.createFakeUri_Help());
 		builder.withColor(20, 200, 20);
 		builder.withTitle("[everyone]");
 	    builder.withDescription("The bot will reply \"pong\"");
@@ -55,7 +55,7 @@ public class Lang {
 	public static EmbedObject make_embed_poll() {
 		EmbedBuilder builder = new EmbedBuilder();
 		builder.withAuthorName("poll <message>");
-		
+		builder.withAuthorUrl(URI_Handler.createFakeUri_Help());
 		builder.withColor(20, 200, 20);
 		builder.withTitle("[everyone]");
 	    builder.withDescription("The bot creates a poll with your message and adds reactions for 'yes' and 'no'."

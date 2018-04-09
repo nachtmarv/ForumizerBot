@@ -42,7 +42,10 @@ public class Constants {
 	public static final int REACTION_POLLEVAL_INT = 0x1f501;
 	// Emoji object of the evaluation emoji. is created at the start of the program.
 	public static ReactionEmoji REACTION_POLLEVAL_EMOJI = create_POLLEVAL_EMOJI();
-	
+	// Color used in poll embeds
+	public static final int[] POLL_EMBED_COLORS = {50,50,250};
+	// 
+	public static final String URI_FAKE = "http://fake.url/index?";
 	
 	private static ReactionEmoji create_POLLEVAL_EMOJI() {
 		String s = new StringBuilder().appendCodePoint(Constants.REACTION_POLLEVAL_INT).toString();

@@ -2,6 +2,7 @@ package Discord.API;
 import Discord.DataManager;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.StatusType;
 import sx.blah.discord.util.DiscordException;
@@ -23,5 +24,5 @@ public class DiscordTemp {
             return null;
         }
     }
-
+	
 }

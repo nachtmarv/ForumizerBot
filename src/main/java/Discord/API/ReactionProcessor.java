@@ -1,19 +1,19 @@
 package Discord.API;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import Discord.Constants;
 import Discord.DataManager;
 import Discord.IO;
-import sx.blah.discord.handle.impl.obj.ReactionEmoji;
+import Wrappers.EmbedWrapper;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IEmbed;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IReaction;
 import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.RequestBuffer;
 
 public class ReactionProcessor {
@@ -21,13 +21,26 @@ public class ReactionProcessor {
 		// Filter reactions from bots
 		if(user.isBot()) return;
 		
-		// Filter messages from this bot for poll reactions
+		// Filter our embed messages
 		if(message.getAuthor().getLongID() == DataManager.Instance().bot_id) {
 			List<IEmbed> embeds = message.getEmbeds();
 			if(embeds.isEmpty()) return;
-			if(embeds.get(0).getAuthor().getName().contains(Constants.POLL_ADDITION)) {
-				processPollReaction(user, message, channel, reaction, added, embeds.get(0));
+			// Create new EmbedWrapper with the embed in the message
+			EmbedWrapper embed = new EmbedWrapper(embeds.get(0));
+			
+			
+			
+			// TEMPORARY COMPATIBILITY FIX TO SUPPORT OLDER POLLS
+			if(embed.getEmbed().getAuthor().getName().contains(Constants.POLL_ADDITION)) {
+				embed.getMetadata().type = EmbedWrapper.Metadata.Type.POLL;
 			}
+			// ***
+			
+			
+			
+			if(embed.getMetadata().type == EmbedWrapper.Metadata.Type.POLL) 
+				processPollReaction(embed, user, message, channel, reaction, added);
+			
 			return;
 		}
 		
@@ -36,7 +49,7 @@ public class ReactionProcessor {
 		
 	}
 	
-	public static void processPollReaction(IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added, IEmbed embed) {
+	public static void processPollReaction(EmbedWrapper embed, IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
 		// Filter for poll evaluation emoji
 		if(!reaction.getEmoji().equals(Constants.REACTION_POLLEVAL_EMOJI)) return;
 		
@@ -44,7 +57,6 @@ public class ReactionProcessor {
 			ServerInteractions.removeReactionFromMessage(message, user, Constants.REACTION_POLLEVAL_EMOJI);
 			return;
 		}
-		
 		// get all voters for both reactions (custom reactions, Id stored in Constants)
 	    IReaction reactionCheck = message.getReactionByUnicode(Constants.REACTION_CHECK);
 	    IReaction reactionX = message.getReactionByUnicode(Constants.REACTION_X);
@@ -58,10 +70,8 @@ public class ReactionProcessor {
 	    	return;
 	    }
 	    
-	    
-	    
-	    Map<Long,IUser> usersYes = new HashMap<Long,IUser>();
-	    Map<Long,IUser> usersNo = new HashMap<Long,IUser>();
+	    Map<Long,IUser> usersYes = new LinkedHashMap<Long,IUser>();
+	    Map<Long,IUser> usersNo = new LinkedHashMap<Long,IUser>();
 	    
 	    //put the users in a map if they are not bots. 
 	    //could be done another way but it remained after some experiments.
@@ -74,35 +84,9 @@ public class ReactionProcessor {
 	    		usersYes.put(u.getLongID(), u);
 		}
 	    
+	    EmbedObject newEmbed = embed.createNewPollEmbedFromPrevious(usersYes, usersNo, message.getGuild());
 	    
-	    // Build strings for voters
-	    String peopleYes = "";
-	    String peopleNo = "";
-	    
-	    for(Map.Entry<Long, IUser> u:usersYes.entrySet())
-	    	peopleYes = peopleYes + u.getValue().getDisplayName(message.getGuild()) + "\n";
-	    for(Map.Entry<Long, IUser> u:usersNo.entrySet())
-	    	peopleNo = peopleNo + u.getValue().getDisplayName(message.getGuild()) + "\n";
-	    
-	    if(usersYes.isEmpty()) peopleYes = "-----";
-	    if(usersNo.isEmpty()) peopleNo = "-----";
-	    
-	    //Creating embed object
-	    EmbedBuilder builder = new EmbedBuilder();
-		builder.withAuthorName(embed.getAuthor().getName());
-		
-		builder.withColor(50, 50, 250);
-	    builder.withDescription(embed.getDescription());
-	    int total = usersYes.size() + usersNo.size();
-	    String numberCheck = " (" + usersYes.size() + "/" + total + ")";
-	    String numberX = " (" + usersNo.size() + "/" + total + ")";
-	    builder.appendField(Constants.REACTION_CHECK + numberCheck, 
-	    		peopleYes, true);
-	    builder.appendField(Constants.REACTION_X + numberX, 
-	    		peopleNo, true);
-	    //builder.withFooterText(embed.getFooter().getText());
-	    
-	    ServerInteractions.editEmbedInMessage(message, builder.build());
+	    ServerInteractions.editEmbedInMessage(message, newEmbed);
 	}
 	
 	public static void processRMC(IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
