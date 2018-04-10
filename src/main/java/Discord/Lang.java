@@ -28,7 +28,7 @@ public class Lang {
 	    		"Marks channel as role management channel.", true);
 	    builder.appendField("rmc remove", 
 	    		"Unmarks channel as role management channel & deletes all bound emojis for that channel.", true);
-	    builder.appendField("rmc bind <role> <emoji>", 
+	    builder.appendField("rmc bind <rolemention> <emoji>", 
 	    		"Binds a role to an emoji."
 	    		+ "The bot will add a tick if everything went well."
 	    		+ "You can only bind emojis the bot has access to."
@@ -54,14 +54,17 @@ public class Lang {
 	
 	public static EmbedObject make_embed_poll() {
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.withAuthorName("poll <message>");
+		builder.withAuthorName("poll \"Titletext\" \"Descriptiontext\" ");
 		builder.withAuthorUrl(URI_Handler.createFakeUri_Help());
 		builder.withColor(20, 200, 20);
 		builder.withTitle("[everyone]");
-	    builder.withDescription("The bot creates a poll with your message and adds reactions for 'yes' and 'no'."
-	    		+ "\nUsers can add their answer like a normal poll. If someone then reacts with the third preadded emoji"
+	    builder.withDescription("The bot creates a poll with your message and adds reactions for 'yes', 'no' and 'update'."
+	    		+ "\nUsers can add their answer like a normal poll. If someone then reacts with the 'update' emoji"
 	    		+ ", The bot will edit the names of everyone who voted into the message for easier viewing."
-	    		+ "\nIf somebody voted with yes and no, the bot will treat it as a no.");
+	    		+ "\nIf somebody voted with yes and no, the bot will treat it as a no."
+	    		+ "\nYou can leave the second \"\" pair empty if you only want a title. "
+	    		+ "\nIf you only use one \"\" pair, it gets used as a description and the bot applies a default title."
+	    		+ "\nDefault title: '[name of poll creator] " +Constants.POLL_ADDITION + "'");
 	    
 	    return builder.build();
 	}

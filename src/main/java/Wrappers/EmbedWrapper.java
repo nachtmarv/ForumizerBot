@@ -3,6 +3,7 @@ package Wrappers;
 import java.util.Map;
 
 import Discord.Constants;
+import Discord.IO;
 import Discord.URI_Handler;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IEmbed;
@@ -36,9 +37,9 @@ public class EmbedWrapper {
 		public int extraInt = 0;
 	}
 	
-	public static EmbedObject CreateFirstPollMessage(IUser author, IGuild guild, String content, int type) {
+	public static EmbedObject CreateFirstPollMessage(IUser author, IGuild guild, String content, int type, String authortext) {
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.withAuthorName(author.getDisplayName(guild) + Constants.POLL_ADDITION);
+		builder.withAuthorName(authortext);
 		builder.withAuthorUrl(URI_Handler.createFakeUri_Poll(author.getLongID(), type));
 		builder.withColor(Constants.POLL_EMBED_COLORS[0],Constants.POLL_EMBED_COLORS[1],Constants.POLL_EMBED_COLORS[2]);
 	    builder.withDescription(content + "\n");
@@ -51,6 +52,10 @@ public class EmbedWrapper {
 	    builder.appendField(Constants.REACTION_X + numberX, 
 	    		peopleNo, true);
 	    return builder.build();
+	}
+	
+	public static EmbedObject CreateFirstPollMessage(IUser author, IGuild guild, String content, int type) {
+		return CreateFirstPollMessage(author, guild, content, type, author.getDisplayName(guild)+Constants.POLL_ADDITION);
 	}
 	
 	public EmbedObject createNewPollEmbedFromPrevious(Map<Long,IUser> usersYes, Map<Long,IUser> usersNo, IGuild guild) {

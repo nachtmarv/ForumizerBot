@@ -51,7 +51,15 @@ public class ReactionProcessor {
 	
 	public static void processPollReaction(EmbedWrapper embed, IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
 		// Filter for poll evaluation emoji
-		if(!reaction.getEmoji().equals(Constants.REACTION_POLLEVAL_EMOJI)) return;
+		if(!reaction.getEmoji().equals(Constants.REACTION_POLLEVAL_EMOJI) && !reaction.getEmoji().getName().equals(Constants.POLLDELETE_EMOJI)) return;
+		
+		// Delete message if poll creator reacted with the delete emoji.
+		if(reaction.getEmoji().getName().equals(Constants.POLLDELETE_EMOJI)) {
+			if(user.getLongID() == embed.getMetadata().uid) {
+				ServerInteractions.deleteMessage(message);
+				return;
+			}
+		}
 		
 		if(added) {
 			ServerInteractions.removeReactionFromMessage(message, user, Constants.REACTION_POLLEVAL_EMOJI);

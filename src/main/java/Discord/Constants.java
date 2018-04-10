@@ -34,6 +34,8 @@ public class Constants {
 	public static final String DELETE_EMOJI = "\u2702";
 	// Unicode emoji used to initiate poll evaluation on poll messages.
 	public static final String POLLEVAL_EMOJI = "\u23F0";
+	// Unicode emoji used to delete polls.
+	public static final String POLLDELETE_EMOJI = "\u2702";
 	// Unicode checkmark emoji used
 	public static final String REACTION_CHECK = "\u2705";
 	// Unicode 'no' and 'X' emoji used
@@ -44,7 +46,7 @@ public class Constants {
 	public static ReactionEmoji REACTION_POLLEVAL_EMOJI = create_POLLEVAL_EMOJI();
 	// Color used in poll embeds
 	public static final int[] POLL_EMBED_COLORS = {50,50,250};
-	// 
+	// URI used for metadata in embeds. Changing this invalidates all previous metadata.
 	public static final String URI_FAKE = "http://fake.url/index?";
 	
 	private static ReactionEmoji create_POLLEVAL_EMOJI() {

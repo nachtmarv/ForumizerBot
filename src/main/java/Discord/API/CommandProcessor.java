@@ -1,6 +1,8 @@
 package Discord.API;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 import Discord.Constants;
 import Discord.DataManager;
@@ -41,9 +43,31 @@ public class CommandProcessor {
 	
 	private static void handlePoll(IMessage message, String[] command) {
 		String content = message.getContent().replaceFirst(DataManager.Instance().bot_prefix+command[0]+" ", "");
+		String contentCopy = content;
+		Vector<String> pars = new Vector<String>();
+		while(contentCopy.indexOf("\"") != -1) {
+			int firstParenth = contentCopy.indexOf("\"");
+			int secondParenth = contentCopy.indexOf("\"",firstParenth+1);
+			if(secondParenth != -1) {
+				pars.addElement(contentCopy.substring(firstParenth+1,secondParenth));
+				contentCopy = contentCopy.substring(secondParenth+1,contentCopy.length());
+			} else {
+				pars.addElement(contentCopy.substring(firstParenth+1));
+				break;
+			}
+		}
 		
-		EmbedObject embed = EmbedWrapper.CreateFirstPollMessage(message.getAuthor(), message.getGuild(), content, EmbedWrapper.POLLTYPE_default);
+		if(pars.isEmpty()) return;
 		
+		EmbedObject embed = null;
+		if(pars.size()==1)
+			embed = EmbedWrapper.CreateFirstPollMessage(message.getAuthor(), message.getGuild(), pars.elementAt(0), EmbedWrapper.POLLTYPE_default);
+		if(pars.size()==2) {
+			if(pars.elementAt(0).equals(""))
+				Collections.swap(pars, 0, 1);
+			embed = EmbedWrapper.CreateFirstPollMessage(message.getAuthor(), message.getGuild(), pars.elementAt(1), EmbedWrapper.POLLTYPE_default, pars.elementAt(0));
+		}
+		if(embed == null) return;
 		IMessage answer = ServerInteractions.sendEmbedInChannel(message.getChannel(), embed);
 		
 		boolean result = ServerInteractions.addReactionToMessage(answer, ReactionEmoji.of(Constants.REACTION_CHECK));

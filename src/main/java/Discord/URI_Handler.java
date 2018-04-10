@@ -33,7 +33,6 @@ public class URI_Handler {
 		
 		String pars = uri.replace(Constants.URI_FAKE, "");
 		String[] parameters = pars.split("&");
-		
 		try {
 			for(String par:parameters) {
 				if(par.startsWith(var_type)) {
@@ -51,10 +50,11 @@ public class URI_Handler {
 				if(par.startsWith(var_extraInt)) {
 					String[] split = par.split("=");
 					if(split.length == 2)
-						content.uid = Integer.parseInt(split[1]);
+						content.extraInt = Integer.parseInt(split[1]);
 				}
 			}
 		} catch(NumberFormatException e) {
+			IO.printToConsole(e.getMessage());
 			content.type = EmbedWrapper.Metadata.Type.NONE;
 		}
 		return content;
