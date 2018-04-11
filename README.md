@@ -1,5 +1,14 @@
 # SentinelBot
-Code for the Sentinel bot we use on our discord server
+Features: Role management and Polls.
+This bot allows for easy setup of role management via reactions and additionaly provides some poll functionality that is continuously expanded upon.
+
+### Discord Server
+Join our development server to discuss features & bugs or simply try out the commands:
+https://discord.gg/gNrEeBg
+
+### Bot Invite link
+If you want to add the bot to your server, here you go:
+https://discordapp.com/api/oauth2/authorize?client_id=276714267388936192&permissions=268789824&scope=bot
 
 ### Install
 Install gradle using you favourite package manager.
