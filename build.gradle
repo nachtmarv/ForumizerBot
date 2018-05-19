@@ -11,7 +11,7 @@ repositories {
   }
 }
 dependencies {
-  compile "com.github.austinv11:Discord4J:2.10.0"
+  compile "com.discord4j:Discord4J:2.10.1"
   compile "mysql:mysql-connector-java:5.1.37"
 }
 jar {
