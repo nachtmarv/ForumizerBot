@@ -27,12 +27,8 @@ public class CommandProcessor {
 		
 		if(command[0].equals("ping")) {
 			ServerInteractions.sendMessageInChannel(message.getChannel(),"pong");
-		} else if(command[0].equals("rmc")) {
-			handleRMC(message, command);
 		} else if(command[0].equals("help")) {
 			handleHelp(message);
-		} else if(command[0].equals("poll")) {
-			handlePoll(message, command);
 		}
 	}
 	
@@ -42,6 +38,7 @@ public class CommandProcessor {
 	}
 	
 	private static void handlePoll(IMessage message, String[] command) {
+		/*
 		String content = message.getContent().replaceFirst(DataManager.Instance().bot_prefix+command[0]+" ", "");
 		String contentCopy = content;
 		Vector<String> pars = new Vector<String>();
@@ -75,10 +72,11 @@ public class CommandProcessor {
 		ServerInteractions.addReactionToMessage(answer, Constants.REACTION_POLLEVAL_EMOJI);
 		
 		ServerInteractions.deleteMessage(message);
+		*/
 	}
 	
 	private static void handleRMC(IMessage message, String[] command) {
-		
+		/*
 		IUser sender = message.getAuthor();
 		IChannel channel = message.getChannel();
 		IGuild guild = message.getGuild();
@@ -119,9 +117,11 @@ public class CommandProcessor {
 		channel.sendMessage("please use rmc with parameters "
 				+ "'add' 'remove' 'bind' 'unbind' 'check'"
 				+ "\ntype "+DataManager.Instance().bot_prefix+"help for additional info.");
+		*/
 	}
 	
 	private static void doBindUnbind(IMessage message, String[] command) {
+		/*
 		IChannel channel = message.getChannel();
 		
 		List<IRole> roles = message.getRoleMentions();
@@ -196,7 +196,7 @@ public class CommandProcessor {
 			}
 		}
 		ServerInteractions.addReactionToMessage(message, ReactionEmoji.of(Constants.REACTION_X));
-			
+		*/
 	}
 	
 	private static long getCustomEmojiId(String s) {

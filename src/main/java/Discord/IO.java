@@ -23,8 +23,8 @@ public class IO {
 	}
 	
 	public static void printToConsole(String s) {
-		writeToFile(s);
 		System.out.println(s);
+		writeToFile(s);
 	}
 	
 	public static void printToConsole(long s) {

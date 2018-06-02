@@ -9,14 +9,17 @@ public class Constants {
 	// Path of the log file
 	public static final String LOGFILE_NAME = "log.txt";
 		
-	// Database string with address, port and credentials
-	public static final String CFG_db_string = "db_string";
 	// Token for the discord bot
 	public static final String CFG_token = "bot_token";
-	// Id of the discord bot
-	public static final String CFG_id = "bot_id";
 	// Prefix to be used for all bot commands
 	public static final String CFG_prefix = "bot_prefix";
+	
+	// 
+	public static final String CFG_mm_prefix = "mm_";
+	// 
+	public static final String CFG_mm_emojiId = "_emojiId";
+	// 
+	public static final String CFG_mm_channelId = "_channelId";
 	
 	// Number of connection retries attempted when connection to database is lost
 	public static final int CONN_TRIES = 10;
@@ -48,6 +51,7 @@ public class Constants {
 	public static final int[] POLL_EMBED_COLORS = {50,50,250};
 	// URI used for metadata in embeds. Changing this invalidates all previous metadata.
 	public static final String URI_FAKE = "http://fake.url/index?";
+	
 	
 	private static ReactionEmoji create_POLLEVAL_EMOJI() {
 		String s = new StringBuilder().appendCodePoint(Constants.REACTION_POLLEVAL_INT).toString();

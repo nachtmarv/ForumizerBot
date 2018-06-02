@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 
-mainClassName = 'Discord.Main'
+mainClassName = 'Discord.ForumizerMain'
 
 repositories {
   jcenter() //This prevents issues with transitive dependencies
@@ -15,6 +15,6 @@ dependencies {
   compile "mysql:mysql-connector-java:5.1.37"
 }
 jar {
-    baseName = 'sentinel'
-    version =  '0.1.1'
+    baseName = 'forumizer'
+    version =  '0.1.0'
 }

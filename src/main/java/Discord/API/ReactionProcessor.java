@@ -1,5 +1,9 @@
 package Discord.API;
 
+import java.security.Permissions;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,45 +15,46 @@ import Wrappers.EmbedWrapper;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IEmbed;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IReaction;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.RequestBuffer;
+import util.Pair;
 
 public class ReactionProcessor {
 	public static void processReaction(IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
 		// Filter reactions from bots
 		if(user.isBot()) return;
 		
-		// Filter our embed messages
-		if(message.getAuthor().getLongID() == DataManager.Instance().bot_id) {
-			List<IEmbed> embeds = message.getEmbeds();
-			if(embeds.isEmpty()) return;
-			// Create new EmbedWrapper with the embed in the message
-			EmbedWrapper embed = new EmbedWrapper(embeds.get(0));
-			
-			
-			
-			// TEMPORARY COMPATIBILITY FIX TO SUPPORT OLDER POLLS
-			if(embed.getEmbed().getAuthor().getName().contains(Constants.POLL_ADDITION)) {
-				embed.getMetadata().type = EmbedWrapper.Metadata.Type.POLL;
-			}
-			// ***
-			
-			
-			
-			if(embed.getMetadata().type == EmbedWrapper.Metadata.Type.POLL) 
-				processPollReaction(embed, user, message, channel, reaction, added);
-			
-			return;
-		}
+		processMessageMoving(user, message, channel, reaction, added);
+	}
+	
+	public static void processMessageMoving(IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
+		Pair<IChannel,IGuild> pair = DataManager.Instance().messageMoveConnections.get(reaction.getEmoji().getLongID());
+		if(pair == null) return;
+		if(channel.getGuild().getLongID() != pair.second.getLongID()) return;
+		if(!user.getPermissionsForGuild(pair.second).contains(sx.blah.discord.handle.obj.Permissions.MANAGE_MESSAGES)) return;
 		
-		// Execute role management routine
-		processRMC(user, message, channel, reaction, added);
+		String answer = "__"+message.getAuthor().mention(true)+" sagte:__ (Verschoben von " + user.getDisplayName(pair.second) + ")\n"+message.getContent();
+		ServerInteractions.sendMessageInChannel(pair.first, answer);
 		
+		/*
+		EmbedBuilder builder = new EmbedBuilder();
+		builder.withAuthorIcon(message.getAuthor().getAvatarURL());
+		LocalDateTime mTime = LocalDateTime.ofInstant(message.getTimestamp(), ZoneOffset.UTC);
+		builder.withAuthorName(message.getAuthor().getDisplayName(message.getGuild()));
+		builder.withDescription(message.getContent());
+		builder.withFooterText("Verschoben aus " + channel.getName() + " von " +user.getDisplayName(channel.getGuild()));
+		ServerInteractions.sendEmbedInChannel(pair.first, builder.build());
+		*/
+		
+		ServerInteractions.deleteMessage(message);
 	}
 	
 	public static void processPollReaction(EmbedWrapper embed, IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
+		/*
 		// Filter for poll evaluation emoji
 		if(!reaction.getEmoji().equals(Constants.REACTION_POLLEVAL_EMOJI) && !reaction.getEmoji().getName().equals(Constants.POLLDELETE_EMOJI)) return;
 		
@@ -95,9 +100,11 @@ public class ReactionProcessor {
 	    EmbedObject newEmbed = embed.createNewPollEmbedFromPrevious(usersYes, usersNo, message.getGuild());
 	    
 	    ServerInteractions.editEmbedInMessage(message, newEmbed);
+	    */
 	}
 	
 	public static void processRMC(IUser user, IMessage message, IChannel channel, IReaction reaction, boolean added) {
+		/*
 		// Filter wrong channels
 		if(!DataManager.Instance().isValidChannel(channel.getLongID())) return;
 		
@@ -138,5 +145,6 @@ public class ReactionProcessor {
 			});
 			return;
 		}
+		*/
 	}
 }
